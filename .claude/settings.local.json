@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\2414342\\\\Downloads\\\\unity_game_01-main\" -Recurse -Force)",
+      "Bash(Select-Object FullName, PSIsContainer)",
+      "Bash(Sort-Object FullName)",
+      "Bash(Format-Table -AutoSize)",
+      "PowerShell(tree \"c:\\\\Users\\\\2414342\\\\Downloads\\\\unity_game_01-main\" -L 3 -Attributes)",
+      "PowerShell(ls -Recurse \"c:\\\\Users\\\\2414342\\\\Downloads\\\\unity_game_01-main\" -Depth 3 2>$null | where {-not $_.PSIsContainer} | select -ExpandProperty FullName | ForEach-Object {$_} | select -First 200)",
+      "Bash(mkdir -p \"c:\\\\Users\\\\2414342\\\\Downloads\\\\unity_game_01-main\\\\Assets\\\\Scripts\\\\Player\" \"c:\\\\Users\\\\2414342\\\\Downloads\\\\unity_game_01-main\\\\Assets\\\\Scripts\\\\Camera\" \"c:\\\\Users\\\\2414342\\\\Downloads\\\\unity_game_01-main\\\\Assets\\\\Scripts\\\\UI\" \"c:\\\\Users\\\\2414342\\\\Downloads\\\\unity_game_01-main\\\\Assets\\\\Editor\")"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\2414342\\Downloads\\unity_game_01-main\\Assets\\Scripts"
+    ]
+  }
+}
