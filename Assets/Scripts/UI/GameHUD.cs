@@ -28,7 +28,7 @@ public class GameHUD : MonoBehaviour
 
     void Start()
     {
-        cachedPC = FindObjectOfType<PlayerController>();
+        cachedPC = FindFirstObjectByType<PlayerController>();
     }
 
     void Update()

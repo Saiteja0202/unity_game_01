@@ -46,11 +46,19 @@ public static class GameSceneSetup
     static void CreateMobileUI()
     {
         // EventSystem (required for UI interaction)
-        if (Object.FindObjectOfType<EventSystem>() == null)
+        if (Object.FindFirstObjectByType<EventSystem>() == null)
         {
             var esGO = new GameObject("EventSystem");
             esGO.AddComponent<EventSystem>();
-            esGO.AddComponent<StandaloneInputModule>();
+
+            // Unity 6 + InputSystem package needs InputSystemUIInputModule.
+            // Fall back to StandaloneInputModule if package is absent.
+            var inputSysModuleType = System.Type.GetType(
+                "UnityEngine.InputSystem.UI.InputSystemUIInputModule, Unity.InputSystem");
+            if (inputSysModuleType != null)
+                esGO.AddComponent(inputSysModuleType);
+            else
+                esGO.AddComponent<StandaloneInputModule>();
         }
 
         // ── Canvas ──────────────────────────────────────────────────────────
