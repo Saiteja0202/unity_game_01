@@ -39,7 +39,13 @@ public class ThirdPersonCamera : MonoBehaviour
     void Update()
     {
         // Cursor lock toggle (desktop)
-        if (Input.GetKeyDown(KeyCode.Escape))
+#if ENABLE_LEGACY_INPUT_MANAGER
+        bool _escPressed = Input.GetKeyDown(KeyCode.Escape);
+#else
+        bool _escPressed = UnityEngine.InputSystem.Keyboard.current != null
+                        && UnityEngine.InputSystem.Keyboard.current.escapeKey.wasPressedThisFrame;
+#endif
+        if (_escPressed)
         {
             bool locked         = Cursor.lockState == CursorLockMode.Locked;
             Cursor.lockState    = locked ? CursorLockMode.None : CursorLockMode.Locked;
@@ -56,14 +62,24 @@ public class ThirdPersonCamera : MonoBehaviour
         }
         else if (Cursor.lockState == CursorLockMode.Locked)
         {
+#if ENABLE_LEGACY_INPUT_MANAGER
             yaw   += Input.GetAxis("Mouse X") * mouseSensitivity;
             pitch -= Input.GetAxis("Mouse Y") * mouseSensitivity;
+#else
+            var _md = UnityEngine.InputSystem.Mouse.current?.delta.ReadValue() ?? Vector2.zero;
+            yaw   += _md.x * mouseSensitivity * 0.05f;
+            pitch -= _md.y * mouseSensitivity * 0.05f;
+#endif
         }
 
         pitch = Mathf.Clamp(pitch, minPitch, maxPitch);
 
         // ── Scroll zoom (desktop) ────────────────────────────────────────────
+#if ENABLE_LEGACY_INPUT_MANAGER
         distance -= Input.GetAxis("Mouse ScrollWheel") * zoomSpeed;
+#else
+        distance -= (UnityEngine.InputSystem.Mouse.current?.scroll.ReadValue().y ?? 0f) * zoomSpeed * 0.01f;
+#endif
         distance  = Mathf.Clamp(distance, minDistance, maxDistance);
         currentDistance = Mathf.Lerp(currentDistance, distance, Time.deltaTime * zoomSmooth);
     }

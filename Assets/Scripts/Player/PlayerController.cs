@@ -39,11 +39,25 @@ public class PlayerController : MonoBehaviour
         if (IsGrounded && velocity.y < 0f) velocity.y = -3f;
 
         // ── Gather input: mobile takes priority, keyboard is fallback ───────
+        // Compile guards support both Unity 6 Input System backends.
+#if ENABLE_LEGACY_INPUT_MANAGER
         float  h          = Input.GetAxisRaw("Horizontal");
         float  v          = Input.GetAxisRaw("Vertical");
         bool   sprint     = Input.GetKey(KeyCode.LeftShift);
         bool   crouchHeld = Input.GetKey(KeyCode.C) || Input.GetKey(KeyCode.LeftControl);
         bool   jumped     = Input.GetKeyDown(KeyCode.Space);
+#else
+        var    _kb        = UnityEngine.InputSystem.Keyboard.current;
+        float  h          = _kb == null ? 0f :
+                                ((_kb.dKey.isPressed || _kb.rightArrowKey.isPressed ? 1f : 0f) -
+                                 (_kb.aKey.isPressed || _kb.leftArrowKey.isPressed  ? 1f : 0f));
+        float  v          = _kb == null ? 0f :
+                                ((_kb.wKey.isPressed || _kb.upArrowKey.isPressed   ? 1f : 0f) -
+                                 (_kb.sKey.isPressed || _kb.downArrowKey.isPressed  ? 1f : 0f));
+        bool   sprint     = _kb != null && _kb.leftShiftKey.isPressed;
+        bool   crouchHeld = _kb != null && (_kb.cKey.isPressed || _kb.leftCtrlKey.isPressed);
+        bool   jumped     = _kb != null && _kb.spaceKey.wasPressedThisFrame;
+#endif
 
         var mobile = MobileInputProvider.Instance;
         if (mobile != null)
